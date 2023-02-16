@@ -15,7 +15,11 @@ const Job = ({ data }) => {
   };
 
   const dispatch = useDispatch();
-  const isSelected = useSelector((state) => state.favourites);
+
+  var isSelected = useSelector((state) => state.favourites).find(
+    (obj) => obj._id === data.id
+  );
+  isSelected ? (isSelected = true) : (isSelected = false);
 
   return (
     <Row
@@ -36,10 +40,12 @@ const Job = ({ data }) => {
           onClick={(e) => {
             console.log("questo è un Dispatch");
             selected === false ? setSelected(true) : setSelected(false);
+
             dispatch({
               type: "ADD_TO_FAVOURITES",
               payload: data,
             });
+
             dispatch({
               type: "DEL_FROM_FAVOURITES",
               payload: data,
