@@ -4,22 +4,22 @@ import { BsFillCheckCircleFill } from "react-icons/bs";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { ADD_TO_FAVOURITES } from "../redux/actions/index.js";
+import { DEL_FROM_FAVOURITES } from "../redux/actions/index.js";
 
 const Job = ({ data }) => {
-  const [selected, setSelected] = useState(false);
-  console.log("Job", selected);
+  const fav = useSelector((state) => state.favourties);
 
   const colorClass = () => {
-    if (selected === true) return "color";
+    if (fav.some((element) => element._id === data._id)) return "colorYes";
     else return "colorNo";
   };
 
   const dispatch = useDispatch();
 
-  var isSelected = useSelector((state) => state.favourites).find(
-    (obj) => obj._id === data.id
+  var isSelected = useSelector((state) => state.favourties).includes(
+    (obj) => obj._id === data._id
   );
-  isSelected ? (isSelected = true) : (isSelected = false);
 
   return (
     <Row
@@ -38,18 +38,19 @@ const Job = ({ data }) => {
         <BsFillCheckCircleFill
           className={colorClass()}
           onClick={(e) => {
+            console.log("data", data);
+
             console.log("questo è un Dispatch");
-            selected === false ? setSelected(true) : setSelected(false);
 
-            dispatch({
-              type: "ADD_TO_FAVOURITES",
-              payload: data,
-            });
-
-            dispatch({
-              type: "DEL_FROM_FAVOURITES",
-              payload: data,
-            });
+            fav.some((element) => element._id === data._id)
+              ? dispatch({
+                  type: DEL_FROM_FAVOURITES,
+                  payload: data,
+                })
+              : dispatch({
+                  type: ADD_TO_FAVOURITES,
+                  payload: data,
+                });
           }}
         />
       </Col>
